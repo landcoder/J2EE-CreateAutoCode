@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>${table.table_comment}->编辑</title>
+<link rel="stylesheet" href="${r'${ctx}'}/r/admin/css/default.css" type="text/css" />
+<link rel="stylesheet" href="${r'${ctx}'}/r/admin/css/custom/add.css" type="text/css" />
+<script type="text/javascript" src="${r'${ctx}'}/r/admin/js/plugins/jquery-1.7.min.js"></script>
+<script type="text/javascript" src="${r'${ctx}'}/r/admin/js/plugins/jquery.uniform.min.js"></script>
+<script type="text/javascript" src="${r'${ctx}'}/r/admin/js/custom/common.js"></script>
+</head>
+<body>
+    <div class="centercontent">
+    <div class="headwrapper">
+        	<div id="basicform" class="subcontent">
+                    <div class="contenttitle2">
+                        <h3>${table.table_comment}->编辑</h3>
+                    </div>
+                    <form class="stdform" action="${r'${ctx}'}/perm/${table.lowerClassName}/merge.do" method="post">
+                    <input type="hidden" name="${table.idCol.proName}" value="${r'${'+table.lowerClassName+'.'+table.idCol.proName+'}'}"/>
+                    <#list table.cols as c>
+                    <#if c.proName!=table.idCol.proName>
+                        <p>
+                        	<label>${c.comment}</label>
+                            <span class="field"><input type="text" name="${c.proName}" class="smallinput" value="${r'${'+table.lowerClassName+'.'+c.proName+'}'}"/></span>
+                        </p>
+                    </#if>
+                    </#list>
+                        
+                        <br clear="all" /><br />
+                        
+                        <p class="stdformbutton">
+                        	<button class="submit radius2">保存</button>
+                            <input type="reset" class="reset radius2" value="重置" />
+                        </p>
+                    </form>
+                    <br />
+            </div><!--subcontent-->
+        </div><!--contentwrapper-->
+	</div><!-- centercontent -->
+</body>
+</html>

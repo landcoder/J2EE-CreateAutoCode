@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>${table.table_comment}</title>
+<link rel="stylesheet" href="${r'${ctx}'}/r/admin/css/default.css" type="text/css" />
+<link rel="stylesheet" href="${r'${ctx}'}/r/admin/css/plugins/jquery.alerts.css" type="text/css" />
+<script type="text/javascript" src="${r'${ctx}'}/r/admin/js/plugins/jquery-1.7.min.js"></script>
+<script type="text/javascript" src="${r'${ctx}'}/r/admin/js/plugins/jquery.uniform.min.js"></script>
+<script type="text/javascript" src="${r'${ctx}'}/r/admin/js/plugins/jquery.alerts.js"></script>
+<link rel="stylesheet" href="${r'${ctx}'}/r/admin/css/custom/list.css" type="text/css" />
+<script type="text/javascript" src="${r'${ctx}'}/r/admin/js/custom/common.js"></script>
+<script type="text/javascript" src="${r'${ctx}'}/r/admin/js/custom/list.js"></script>
+</head>
+
+<body>
+    <div class="centercontent tables">
+        <div class="pageheader notab notop">
+        	<div class="headwrapper">
+            	<div class="contenttitle2">
+                	<h3>${table.table_comment}信息管理</h3>
+                </div><!--contenttitle-->
+                <form action="${r'${ctx}'}/perm/${table.lowerClassName}/plist.do" method="post" id="search_form">
+                <input type="hidden" name="cpage" id="cpage" value="${r"${q.cpage!'1'}"}">
+               	<table cellpadding="0" cellspacing="0" border="0" class="stdtable">
+	               	<colgroup>
+	                    <col class="con1" style="width: 20%;"/>
+	                    <col class="con0" style="width: 30%;"/>
+	                    <col class="con1" style="width: 20%;"/>
+	                    <col class="con0" />
+	                </colgroup>
+                    <tr>
+                        <td class="label">${table.noIdCols[0].comment}：</td>
+                        <td><input type="text" class="mediuminput" name="${table.noIdCols[0].proName}" value="${r'${q.'+table.noIdCols[0].proName+'}'}"></td>
+                        <td class="label">&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td class="label" colspan="4"><button class="submit">Search</button></td>
+                    </tr>
+               	</table>
+               	</form>
+            </div>
+        </div><!--pageheader-->
+        
+        <div id="contentwrapper" class="contentwrapper">
+        	<div class="dataTables_length">
+        		<a href="${r'${ctx}'}/perm/${table.lowerClassName}/aoe.do"><button class="stdbtn" type="button">添加</button></a>
+        		<a href="javascript:void(0)"><button class="stdbtn" type="button" onclick="edit('${r'${ctx}'}/perm/${table.lowerClassName}/aoe.do','${table.idCol.proName}')">编辑</button></a>
+        		<a href="javascript:void(0)"><button class="stdbtn" type="button" onclick="del('${r'${ctx}'}/perm/${table.lowerClassName}/del.do')">删除</button></a>
+        	</div>
+            <table id="data_table" cellpadding="0" cellspacing="0" border="0" class="stdtable qw">
+                <colgroup>
+                    <col class="con1" style="width: 4%" />
+                    <#list table.noIdCols as c>
+                    <#if c_index%2==0>
+                    <col class="con0" />
+                    <#else>
+                    <col class="con1" />
+                    </#if>
+                    </#list>
+                </colgroup>
+                <thead>
+                    <tr>
+                      <th class="head1 nosort"><input type="checkbox" class="checkall"/></th>
+                      <#list table.noIdCols as c>
+	                    <#if c_index%2==0>
+	                    <th class="head0">${c.comment}</th>
+	                    <#else>
+	                    <th class="head1">${c.comment}</th>
+	                    </#if>
+	                  </#list>
+                    </tr>
+                </thead>
+                <tbody>
+                	${r'[#list page.result as o]'}
+                    <tr>
+                      <td align="center"><span class="center">
+                        <input type="checkbox" value="${r'${o.'+table.idCol.proName+'}'}"/>
+                      </span></td>
+                      	<#list table.noIdCols as c>
+		                	<#if c.javaType=='Date'>
+		                	<td>${r'${o.'+c.proName+'Str}'}</td>
+		                	<#else>
+		                	<td>${r'${o.'+c.proName+'}'}</td>
+		                	</#if>
+		                </#list>
+                    </tr>
+                    ${r'[/#list]'}
+                </tbody>
+            </table>
+	        [#include "/aigou_sys/include/listpage.html"/]
+        </div><!--contentwrapper-->
+        
+	</div><!-- centercontent -->
+</body>
+</html>

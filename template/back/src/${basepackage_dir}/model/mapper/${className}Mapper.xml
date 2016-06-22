@@ -1,0 +1,104 @@
+<#assign className = table.className>   
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<#macro mapperEl value>${r"#{"}${value}}</#macro>
+<#macro namespace>${basepackage}.model.${className}.</#macro>
+<mapper namespace="${basepackage}.model.${className}">
+
+	<resultMap id="rm" type="${basepackage}.model.${className}">
+        <#list table.cols as column>
+        <result property="${column.proName}" column="${column.colName}"/>
+		</#list>
+	</resultMap>
+	
+	<sql id="columns">
+	    <![CDATA[
+		<#list table.cols as column>${column.colName}<#if column_has_next>,</#if></#list>
+	    ]]>
+	</sql>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="${table.idCol.proName}">
+    <![CDATA[
+        INSERT INTO ${table.table_name} (<#list table.cols as column> ${column.colName} <#if column_has_next>,</#if></#list>) 
+        VALUES (<#list table.cols as column><@mapperEl column.proName/> <#if column_has_next>,</#if></#list>)
+    ]]>
+	</insert>
+	
+	<update id="update" >
+        UPDATE ${table.table_name}
+       	<set>
+	        <#list table.cols as column>
+	        <#if column.colName!=table.idCol.colName>
+	        	<#if column.javaType=='String'>
+		        	<if test="${column.proName} != null and ${column.proName} != ''">
+		        		${column.colName} = <@mapperEl column.proName/> <#if column_has_next>,</#if>
+		        	</if>
+		        <#else>
+		        	<if test="${column.proName} != null">
+		        		${column.colName} = <@mapperEl column.proName/> <#if column_has_next>,</#if>
+		        	</if>
+		        </#if>
+	        </#if>
+	        </#list>
+        </set>
+        WHERE ${table.idCol.colName} = <@mapperEl table.idCol.proName/>
+	</update>
+
+    <delete id="delete">
+    <![CDATA[
+        DELETE FROM ${table.table_name} WHERE
+        ${table.idCol.colName} = <@mapperEl table.idCol.proName/>
+    ]]>
+    </delete>
+    
+    <select id="getById" resultMap="rm">
+		SELECT <include refid="columns" />
+	    <![CDATA[
+		    FROM ${table.table_name} 
+	        WHERE ${table.idCol.colName} = <@mapperEl table.idCol.proName/>
+	    ]]>
+	</select>
+	
+	<sql id="findByWhere">
+		<where>	      				
+	       <#list table.cols as column>
+	       <#if column.javaType=='Date'>
+	       <if test="${column.proName}Begin!=null">
+				AND ${column.colName} >= <@mapperEl column.proName+"Begin"/>
+		   </if>
+		   <if test="${column.proName}End!=null">
+				AND ${column.colName} &lt;= <@mapperEl column.proName+"End"/>
+		   </if>
+	       <#elseif column.javaType=='String'>
+	       <if test="${column.proName}!=null and ${column.proName}!=''">
+				AND ${column.colName} = <@mapperEl column.proName/>
+			</if>
+			<#else>
+	       <if test="${column.proName}!=null">
+				AND ${column.colName} = <@mapperEl column.proName/>
+			</if>
+	       </#if>
+	       </#list>			
+		</where>
+	</sql>
+	
+	<select id="findcount" resultType="long">
+        SELECT count(*) FROM ${table.table_name} 
+		<include refid="findByWhere"/>    
+    </select>
+    
+    <select id="findlist" resultMap="rm">
+    	SELECT <include refid="columns" />
+	    FROM ${table.table_name} 
+		<include refid="findByWhere"/>
+		<if test="sortColumns!=null and sortColumns!=''">
+			ORDER BY ${r'${sortColumns}'}
+		</if>
+		<if test="cpage!=null and pageSize!=null">
+			limit ${r'${startSize}'},${r'${pageSize}'}
+		</if>
+    </select>
+</mapper>
+
